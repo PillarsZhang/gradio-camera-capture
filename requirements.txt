@@ -1,0 +1,4 @@
+opencv-python
+gradio
+fire
+loguru
