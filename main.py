@@ -69,7 +69,7 @@ class Camera:
 
 
 def get_cameras(max_cameras: int = 8, backend: str = MY_CV_DEFAULT_BACKEND):
-    """Detect available cameras and return a dictionary with descriptions and indices."""
+    """Detect available cameras or user cameras and return a dictionary."""
     camera_dic: dict[str, Camera] = {}
 
     if (fn := Path(MY_CAMERA_CONFIG_YAML)).exists():
@@ -185,9 +185,19 @@ def capture_video(
 
 
 def launch_app(
-    server_name="127.0.0.1", server_port=7860, auth: tuple[str, str] = None, show_error=True
+    server_name="127.0.0.1",
+    server_port=7860,
+    auth_username: str = None,
+    auth_password: str = None,
+    show_error=True,
 ):
     """Start the Gradio app with specified parameters."""
+
+    auth = (auth_username, auth_password)
+    if not any(auth):
+        auth = None
+    elif not all(auth):
+        raise ValueError("Username and password must be set simultaneously.")
 
     camera_dic = get_cameras()
     camera_keys = list(camera_dic.keys())
